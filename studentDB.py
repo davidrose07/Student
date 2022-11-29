@@ -4,6 +4,9 @@ import pandas as pd
 import tkinter.messagebox as msg
 
 class StudentDB():
+    '''
+    Database Functions
+    '''
     def __init__(self):
         '''
         Create Database if not exists
@@ -17,7 +20,7 @@ class StudentDB():
             self.con = sqlite3.connect('Student.db')
          
         #### Create Table is not exists  #####    
-        self.con.execute("CREATE TABLE IF NOT EXISTS student(id integer PRIMARY KEY, password text, studentId text, FirstName text, LastName text, age int, address text, phoneNumber text, year integer, status text, email text, UNIQUE(studentId))")
+        self.con.execute("CREATE TABLE IF NOT EXISTS student(id integer PRIMARY KEY, password text, studentId text, FirstName text, LastName text,email text, age int, address text, phoneNumber text, year integer, status text,  UNIQUE(studentId))")
         
         self.add_admin()
                 
@@ -41,10 +44,13 @@ class StudentDB():
             return False
         
     def add_admin(self) -> None:
+        '''
+        Adds the admin user to the database on creation if not exists
+        '''
         con = sqlite3.connect('Student.db')
         try:
             ######## Create admin user #############
-            admin = ['test','00000','admin','admin',0,'admin','admin',0,'admin','admin@unomaha.edu']
+            admin = ['test','00000','admin','admin','admin@unomaha.edu',0,'admin','admin',0,'admin']
             con.execute('INSERT OR IGNORE INTO student VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)', admin )
             con.commit()
             con.close()
@@ -75,9 +81,7 @@ class StudentDB():
         try:
             cursor.execute("SELECT studentId FROM student WHERE studentId LIKE ?",(data,))
             id = cursor.fetchall()
-            print(id)
             if id[0][0] == data:
-                print(f'ID = {id} and data={data}')
                 return True
         except:
             pass
@@ -85,13 +89,12 @@ class StudentDB():
             cursor.execute("SELECT email FROM student WHERE email LIKE ?",(data,))
             email=cursor.fetchall()
             if email[0][0] == data:
-                print(f'Email = {id} and data={data}')
                 return True
         except:
             pass
         return False
             
-    def update(id,studentId,password,FirstName,LastName, age, address, phoneNumber, year, status, email) -> None:
+    def update(id,studentId,password,FirstName,LastName,email, age, address, phoneNumber, year, status) -> None:
         '''
         Updates data already in the database
               exception handling for empty fields
@@ -107,6 +110,8 @@ class StudentDB():
             con.execute("UPDATE student SET FirstName=? WHERE id=?" , (FirstName,id))
         if LastName != "":
             con.execute("UPDATE student SET LastName=? WHERE id=?" , (LastName,id))
+        if email != "":
+            con.execute("UPDATE student SET email=? WHERE id=?" , (email,id))
         if age != "":
             con.execute("UPDATE student SET age=? WHERE id=?" , (age,id))
         if address != "":
@@ -117,8 +122,7 @@ class StudentDB():
             con.execute("UPDATE student SET year=? WHERE id=?" , (year,id))
         if status != "":
             con.execute("UPDATE student SET status=? WHERE id=?" , (status,id))
-        if email != "":
-            con.execute("UPDATE student SET email=? WHERE id=?" , (email,id))        
+               
         con.commit()
         con.close()
     
@@ -129,12 +133,17 @@ class StudentDB():
         '''
         con = sqlite3.connect('Student.db')
         cursor = con.cursor()
-        cursor.execute('SELECT * FROM Student')
+        cursor.execute('SELECT id,studentId,FirstName,LastName,email FROM Student')
         rows = cursor.fetchall()
         con.close()
         return rows
     
     def searchId(event, studentSearch) -> list:
+        '''
+        Function that takes id from listbox selection and returns database results
+        :param studentSearch: id number from listbox selection
+        :return: Returns list of database results
+        '''
         con = sqlite3.connect('Student.db')
         cursor = con.cursor()
         cursor.execute("SELECT * FROM student WHERE id like ?", (studentSearch,))
@@ -150,7 +159,7 @@ class StudentDB():
         '''    
         con = sqlite3.connect('Student.db')
         cursor = con.cursor()
-        cursor.execute("SELECT * FROM student WHERE studentId LIKE '%" + mystring + "%' OR FirstName LIKE '%" + mystring + "%' OR LastName LIKE '%" + mystring + "%' OR age LIKE '%" + mystring + "%' OR address LIKE '%" + mystring + "%' OR phoneNumber LIKE '%" + mystring + "%' OR year LIKE '%" + mystring + "%' OR status LIKE '%" + mystring + "%'  OR email LIKE '%" + mystring + "%'")
+        cursor.execute("SELECT id,studentId,FirstName,LastName,email FROM student WHERE studentId LIKE '%" + mystring + "%' OR FirstName LIKE '%" + mystring + "%' OR LastName LIKE '%" + mystring + "%' OR email LIKE '%" + mystring + "%'")
         rows=cursor.fetchall()
         con.close()
         return rows    
