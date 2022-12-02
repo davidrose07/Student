@@ -254,12 +254,24 @@ class Student(Tk):
         self.entry_status.delete(0, END)
         self.entry_year.delete(0, END)
         self.entry_email.delete(0, END)
-
+        self.reset_error()
+        
+    def reset_error(self) -> None:
+        '''
+        Resets error astericks when adding invalid data
+        '''
+        self.label_id_error.config(fg='white')
+        self.label_first_name_error.config(fg='white')
+        self.label_last_name_error.config(fg='white')
+        self.label_password_error.config(fg='white')
+        self.label_email_error.config(fg='white')
+            
     def studentRecord(self, event) -> None:
         '''
         Auto fills entry boxes with listbox selection
         :param event: event is a mouse click and is assigned an index from selection
         '''
+        self.reset_error()
         global id
         studentSearch = (self.student_list.curselection()[0] + 1)
         listId = StudentDB.searchId(event, str(studentSearch))
@@ -281,6 +293,7 @@ class Student(Tk):
         Uses StudentDB class to retrieve results of search and displays them in the listbox
         :param event: Event is a keystroke. Retrieves entry text and searches for results in the database
         '''
+        self.reset_error()
         mystring = self.student_search.get()
         if len(mystring) > 0:
             rows = StudentDB.searchdb(event, mystring)
@@ -294,15 +307,26 @@ class Student(Tk):
         '''
         Uses StudentDB class to update the current selection in the database
         '''
+        self.reset_error()
         global id
-        StudentDB.update(id, self.student_id.get(), self.password.get(), self.first_name.get(), self.last_name.get(
-        ), self.email.get(), self.age.get(), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get())
-        self.display()
+        if (self.password.get() == "") or (self.first_name.get() == "") or (self.last_name.get()==""):
+            msg.showerror("Invalid Entry               ")
+            self.label_password_error.config(fg='red')
+            self.label_first_name_error.config(fg='red')
+            self.label_last_name_error.config(fg='red')
+        else:
+            StudentDB.update(id, self.password.get(), self.first_name.get(), self.last_name.get(), self.age.get(), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get())
+            '''
+            StudentDB.update(id, self.student_id.get(), self.password.get(), self.first_name.get(), self.last_name.get(
+            ), self.email.get(), self.age.get(), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get())
+            '''
+            self.display()
 
     def addData(self) -> None:
         '''
         Uses StudentDB class to add new data to the database
         '''
+        valid=True
         data = [self.password.get(), self.student_id.get(), self.first_name.get(), self.last_name.get(), self.email.get(), self.age.get(
         ), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get()]
         
@@ -313,40 +337,53 @@ class Student(Tk):
             self.label_first_name_error.config(fg='red')
             self.label_last_name_error.config(fg='red')
             self.label_email_error.config(fg='red')
+            valid=False
         else:    
             if (data[0] == ""):
                 self.label_password_error.config(fg="red")
+                valid=False
             else:
                 self.label_password_error.config(fg="white")
+                valid=True
                 
             if (data[1] == ""):
                 self.label_id_error.config(fg="red")
+                valid=False
             elif (StudentDB.find_duplicates(data[1]) == True):
                 self.label_id_error.config(fg="red")
+                valid=False
                 msg.showerror("Duplicate student id               ")
             else:
                 self.label_id_error.config(fg='white')
+                valid=True
                 
             if (data[2] == ""):
                 self.label_first_name_error.config(fg="red")
+                valid=False
             else:
                 self.label_first_name_error.config(fg='white')
+                valid=True
                 
             if (data[3] == ""):
                 self.label_last_name_error.config(fg="red")
+                valid=False
             else:
                 self.label_last_name_error.config(fg='white')
+                valid=True
                 
             if (data[4] == ""):
                 self.label_email_error.config(fg="red")
+                valid=False
                 msg.showerror("Please enter email                  ")
             elif (StudentDB.find_duplicates(data[4]) == True):
-                self.label_id_error.config(fg="red")
+                self.label_email_error.config(fg="red")
+                valid=False
                 msg.showerror("Duplicate email                 ")
             else:
                 self.label_email_error.config(fg='white')
+                valid=True
                 
-        if not(data[0] == "" or data[1] == "" or data[2] == "" or data[3] == "" or data[4] == ""):     
+        if (valid==True):     
             StudentDB.addNew(data)
             self.display()
 

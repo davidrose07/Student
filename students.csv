@@ -1,3 +1,2 @@
-id,password,studentId,FirstName,LastName,age,address,phoneNumber,year,status,email
-
+id,password,studentId,FirstName,LastName,email,age,address,phoneNumber,year,status
 

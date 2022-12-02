@@ -94,7 +94,7 @@ class StudentDB():
             pass
         return False
             
-    def update(id,studentId,password,FirstName,LastName,email, age, address, phoneNumber, year, status) -> None:
+    def update(id,password,FirstName,LastName,age, address, phoneNumber, year, status) -> None:
         '''
         Updates data already in the database
               exception handling for empty fields
@@ -102,16 +102,16 @@ class StudentDB():
         '''
         
         con = sqlite3.connect('Student.db')
-        if studentId != "":
-            con.execute("UPDATE student SET studentId=? WHERE id=?" , (studentId,id))
+        #if studentId != "":
+        #    con.execute("UPDATE student SET studentId=? WHERE id=?" , (studentId,id))
         if password != "":
             con.execute("UPDATE student SET password=? WHERE id=?",(password,id))
         if FirstName != "":
             con.execute("UPDATE student SET FirstName=? WHERE id=?" , (FirstName,id))
         if LastName != "":
             con.execute("UPDATE student SET LastName=? WHERE id=?" , (LastName,id))
-        if email != "":
-            con.execute("UPDATE student SET email=? WHERE id=?" , (email,id))
+        #if email != "":
+        #    con.execute("UPDATE student SET email=? WHERE id=?" , (email,id))
         if age != "":
             con.execute("UPDATE student SET age=? WHERE id=?" , (age,id))
         if address != "":
