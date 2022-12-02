@@ -1,2 +1,3 @@
 id,password,studentId,FirstName,LastName,email,age,address,phoneNumber,year,status
-
+1,test,00000,admin,admin,admin@unomaha.edu,0,admin,admin,0,admin
+2,test,1111,brian,johnson,bj@unomaha.edu,21,123 Red Road,555-2323,2,Sophmore

@@ -316,10 +316,6 @@ class Student(Tk):
             self.label_last_name_error.config(fg='red')
         else:
             StudentDB.update(id, self.password.get(), self.first_name.get(), self.last_name.get(), self.age.get(), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get())
-            '''
-            StudentDB.update(id, self.student_id.get(), self.password.get(), self.first_name.get(), self.last_name.get(
-            ), self.email.get(), self.age.get(), self.address.get(), self.phone_number.get(), self.year.get(), self.status.get())
-            '''
             self.display()
 
     def addData(self) -> None:
